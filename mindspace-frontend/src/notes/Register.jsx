@@ -14,14 +14,9 @@ import {
   useToast,
   Flex,
   Container,
-  Progress,
-  Divider,
-  Icon,
-  FormErrorMessage,
-  Tooltip
+  Progress
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon, EmailIcon, LockIcon, AtSignIcon } from "@chakra-ui/icons";
-import { FaUser } from "react-icons/fa";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -120,313 +115,369 @@ export default function Register() {
       minH="100vh"
       align="center"
       justify="center"
-      bgGradient="linear(to-br, green.50, teal.50)"
-      py={10}
+      bg="gray.50"
+      px={4}
     >
-      <Container maxW="md">
-        <Box
-          bg="white"
-          p={8}
-          borderRadius="2xl"
-          boxShadow="xl"
-          border="1px solid"
-          borderColor="gray.200"
+      <Container maxW="1200px" centerContent>
+        <Flex
+          direction={{ base: "column", lg: "row" }}
+          align="center"
+          justify="space-between"
+          width="100%"
+          gap={{ base: 10, lg: 20 }}
         >
-          <VStack spacing={6} align="stretch">
-            {/* Header */}
-            <VStack spacing={3}>
-              <Heading 
-                size="xl" 
-                color="teal.600" 
-                fontWeight="800"
-                letterSpacing="tight"
-              >
-                Join MindSpace
-              </Heading>
-              <Text color="gray.500" fontSize="md" textAlign="center">
-                Create your account and start organizing your thoughts
-              </Text>
-            </VStack>
+          {/* Left Side - Info */}
+          <Box
+            flex="1"
+            maxW="600px"
+            textAlign={{ base: "center", lg: "left" }}
+          >
+            <Heading 
+              size="4xl" 
+              color="teal.600" 
+              fontWeight="800"
+              letterSpacing="tight"
+              mb={6}
+              lineHeight="1.2"
+            >
+              Start Your Productivity Journey
+            </Heading>
+            
+            <Text fontSize="2xl" color="gray.600" mb={8} lineHeight="1.6">
+              Join thousands of users who organize their thoughts, ideas, and projects 
+              with MindSpace. Your personal workspace awaits.
+            </Text>
+            
+            <Box 
+              bg="white" 
+              p={8} 
+              borderRadius="2xl" 
+              boxShadow="lg"
+              border="1px solid"
+              borderColor="gray.200"
+              display={{ base: "none", lg: "block" }}
+            >
+              <VStack align="start" spacing={5}>
+                <Heading size="lg" color="gray.800">What You'll Get</Heading>
+                <Text fontSize="lg" color="gray.600">• Unlimited notes and organization</Text>
+                <Text fontSize="lg" color="gray.600">• Rich text editor with markdown support</Text>
+                <Text fontSize="lg" color="gray.600">• Real-time auto-save and sync</Text>
+                <Text fontSize="lg" color="gray.600">• Tag and folder organization</Text>
+                <Text fontSize="lg" color="gray.600">• Access from any device</Text>
+              </VStack>
+            </Box>
+          </Box>
 
-            <Divider />
-
-            {/* Registration Form */}
-            <form onSubmit={handleRegister}>
-              <VStack spacing={5}>
-                {/* Username Field */}
-                <FormControl isRequired>
-                  <FormLabel color="gray.700" fontWeight="600">
-                    Username
-                  </FormLabel>
-                  <InputGroup>
-                    <Input
-                      type="text"
-                      placeholder="Choose a username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      size="lg"
-                      borderRadius="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "teal.400" }}
-                      _focus={{
-                        borderColor: "teal.500",
-                        boxShadow: "0 0 0 1px teal.500",
-                      }}
-                      pl={12}
-                    />
-                    <InputRightElement 
-                      pointerEvents="none" 
-                      children={<Icon as={FaUser} color="gray.400" />}
-                      h="full"
-                      mr={3}
-                    />
-                  </InputGroup>
-                  <Text fontSize="xs" color="gray.500" mt={1}>
-                    This will be your unique identifier
-                  </Text>
-                </FormControl>
-
-                {/* Email Field */}
-                <FormControl>
-                  <FormLabel color="gray.700" fontWeight="600">
-                    Email Address (Optional)
-                  </FormLabel>
-                  <InputGroup>
-                    <Input
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      size="lg"
-                      borderRadius="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "teal.400" }}
-                      _focus={{
-                        borderColor: "teal.500",
-                        boxShadow: "0 0 0 1px teal.500",
-                      }}
-                      pl={12}
-                    />
-                    <InputRightElement 
-                      pointerEvents="none" 
-                      children={<EmailIcon color="gray.400" />}
-                      h="full"
-                      mr={3}
-                    />
-                  </InputGroup>
-                  <Text fontSize="xs" color="gray.500" mt={1}>
-                    For password recovery and notifications
-                  </Text>
-                </FormControl>
-
-                {/* Password Field */}
-                <FormControl isRequired>
-                  <FormLabel color="gray.700" fontWeight="600">
-                    Password
-                  </FormLabel>
-                  <InputGroup>
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Create a strong password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      size="lg"
-                      borderRadius="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "teal.400" }}
-                      _focus={{
-                        borderColor: "teal.500",
-                        boxShadow: "0 0 0 1px teal.500",
-                      }}
-                      pl={12}
-                    />
-                    <InputRightElement 
-                      h="full"
-                      mr={3}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowPassword(!showPassword)}
-                        _hover={{ bg: "transparent" }}
-                      >
-                        {showPassword ? (
-                          <ViewOffIcon color="gray.500" />
-                        ) : (
-                          <ViewIcon color="gray.500" />
-                        )}
-                      </Button>
-                    </InputRightElement>
-                    <InputRightElement 
-                      pointerEvents="none" 
-                      children={<LockIcon color="gray.400" />}
-                      h="full"
-                      mr={12}
-                    />
-                  </InputGroup>
-                  
-                  {/* Password Strength Indicator */}
-                  {password && (
-                    <Box mt={2}>
-                      <Progress 
-                        value={passwordStrength} 
-                        size="sm" 
-                        colorScheme={getPasswordStrengthColor()}
-                        borderRadius="full"
-                      />
-                      <Text fontSize="xs" color="gray.500" mt={1}>
-                        {passwordStrength >= 75 ? "Strong" : 
-                         passwordStrength >= 50 ? "Moderate" : 
-                         passwordStrength >= 25 ? "Weak" : "Very weak"}
-                      </Text>
-                    </Box>
-                  )}
-                  
-                  <Text fontSize="xs" color="gray.500" mt={2}>
-                    • At least 8 characters<br/>
-                    • Include uppercase & lowercase<br/>
-                    • Include numbers & symbols
-                  </Text>
-                </FormControl>
-
-                {/* Confirm Password Field */}
-                <FormControl isRequired isInvalid={password && password2 && password !== password2}>
-                  <FormLabel color="gray.700" fontWeight="600">
-                    Confirm Password
-                  </FormLabel>
-                  <InputGroup>
-                    <Input
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Re-enter your password"
-                      value={password2}
-                      onChange={(e) => setPassword2(e.target.value)}
-                      size="lg"
-                      borderRadius="lg"
-                      borderColor="gray.300"
-                      _hover={{ borderColor: "teal.400" }}
-                      _focus={{
-                        borderColor: "teal.500",
-                        boxShadow: "0 0 0 1px teal.500",
-                      }}
-                      pl={12}
-                    />
-                    <InputRightElement 
-                      h="full"
-                      mr={3}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        _hover={{ bg: "transparent" }}
-                      >
-                        {showConfirmPassword ? (
-                          <ViewOffIcon color="gray.500" />
-                        ) : (
-                          <ViewIcon color="gray.500" />
-                        )}
-                      </Button>
-                    </InputRightElement>
-                    <InputRightElement 
-                      pointerEvents="none" 
-                      children={<LockIcon color="gray.400" />}
-                      h="full"
-                      mr={12}
-                    />
-                  </InputGroup>
-                  {password && password2 && password !== password2 && (
-                    <FormErrorMessage>
-                      Passwords do not match
-                    </FormErrorMessage>
-                  )}
-                </FormControl>
-
-                {/* Terms & Conditions */}
-                <Box 
-                  p={4} 
-                  bg="gray.50" 
-                  borderRadius="lg" 
-                  border="1px solid" 
-                  borderColor="gray.200"
-                >
-                  <Text fontSize="sm" color="gray.600">
-                    By creating an account, you agree to our{" "}
-                    <Link color="teal.500" fontWeight="600">Terms of Service</Link>{" "}
-                    and{" "}
-                    <Link color="teal.500" fontWeight="600">Privacy Policy</Link>.
+          {/* Right Side - Registration Form */}
+          <Box
+            flex={{ base: "1", lg: "0.9" }}
+            maxW="550px"
+            width="100%"
+            mx="auto"
+          >
+            <Box
+              bg="white"
+              p={10}
+              borderRadius="2xl"
+              boxShadow="2xl"
+              border="1px solid"
+              borderColor="gray.200"
+              width="100%"
+            >
+              <VStack spacing={8} align="stretch">
+                {/* Form Header */}
+                <Box textAlign="center">
+                  <Heading 
+                    size="2xl" 
+                    color="gray.800" 
+                    fontWeight="700"
+                    mb={3}
+                  >
+                    Create Account
+                  </Heading>
+                  <Text color="gray.500" fontSize="lg">
+                    Join MindSpace in seconds
                   </Text>
                 </Box>
 
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  w="full"
-                  colorScheme="teal"
-                  size="lg"
-                  fontSize="md"
-                  fontWeight="600"
-                  py={6}
-                  borderRadius="lg"
-                  isLoading={isLoading}
-                  loadingText="Creating account..."
-                  isDisabled={passwordStrength < 50}
-                  _hover={{
-                    bg: "teal.600",
-                    transform: "translateY(-2px)",
-                    boxShadow: "lg"
-                  }}
-                  transition="all 0.3s"
-                >
-                  Create Account
-                </Button>
-              </VStack>
-            </form>
+                {/* Registration Form */}
+                <form onSubmit={handleRegister}>
+                  <VStack spacing={6}>
+                    {/* Username Field */}
+                    <FormControl isRequired>
+                      <FormLabel color="gray.700" fontWeight="600" fontSize="md" mb={2}>
+                        Username
+                      </FormLabel>
+                      <Input
+                        type="text"
+                        placeholder="Choose a username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        size="lg"
+                        height="56px"
+                        borderRadius="lg"
+                        borderColor="gray.300"
+                        _hover={{ borderColor: "teal.400" }}
+                        _focus={{
+                          borderColor: "teal.500",
+                          boxShadow: "0 0 0 3px rgba(56, 178, 172, 0.15)",
+                        }}
+                        fontSize="md"
+                        paddingX={4}
+                      />
+                    </FormControl>
 
-            {/* Already have account */}
-            <Box textAlign="center" pt={4}>
-              <Text color="gray.600" fontSize="sm">
-                Already have an account?{" "}
-                <Link
-                  color="teal.500"
-                  fontWeight="700"
-                  _hover={{ color: "teal.600", textDecoration: "underline" }}
-                  onClick={() => navigate("/login")}
+                    {/* Email Field */}
+                    <FormControl>
+                      <FormLabel color="gray.700" fontWeight="600" fontSize="md" mb={2}>
+                        Email Address (Optional)
+                      </FormLabel>
+                      <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        size="lg"
+                        height="56px"
+                        borderRadius="lg"
+                        borderColor="gray.300"
+                        _hover={{ borderColor: "teal.400" }}
+                        _focus={{
+                          borderColor: "teal.500",
+                          boxShadow: "0 0 0 3px rgba(56, 178, 172, 0.15)",
+                        }}
+                        fontSize="md"
+                        paddingX={4}
+                      />
+                      <Text fontSize="sm" color="gray.500" mt={2}>
+                        For password recovery and notifications
+                      </Text>
+                    </FormControl>
+
+                    {/* Password Field */}
+                    <FormControl isRequired>
+                      <FormLabel color="gray.700" fontWeight="600" fontSize="md" mb={2}>
+                        Password
+                      </FormLabel>
+                      <InputGroup>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Create a strong password"
+                          value={password}
+                          onChange={handlePasswordChange}
+                          size="lg"
+                          height="56px"
+                          borderRadius="lg"
+                          borderColor="gray.300"
+                          _hover={{ borderColor: "teal.400" }}
+                          _focus={{
+                            borderColor: "teal.500",
+                            boxShadow: "0 0 0 3px rgba(56, 178, 172, 0.15)",
+                          }}
+                          fontSize="md"
+                          paddingX={4}
+                          paddingRight="60px"
+                        />
+                        <InputRightElement 
+                          height="56px"
+                          width="4.5rem"
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowPassword(!showPassword)}
+                            _hover={{ bg: "transparent" }}
+                            h="100%"
+                            w="100%"
+                          >
+                            {showPassword ? (
+                              <ViewOffIcon color="gray.500" boxSize={5} />
+                            ) : (
+                              <ViewIcon color="gray.500" boxSize={5} />
+                            )}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                      
+                      {/* Password Strength */}
+                      {password && (
+                        <Box mt={4}>
+                          <Box display="flex" justifyContent="space-between" mb={2}>
+                            <Text fontSize="md" color="gray.600" fontWeight="600">
+                              Password strength:
+                            </Text>
+                            <Text 
+                              fontSize="md" 
+                              fontWeight="700"
+                              color={
+                                passwordStrength >= 75 ? "green.600" : 
+                                passwordStrength >= 50 ? "yellow.600" : 
+                                passwordStrength >= 25 ? "orange.600" : "red.600"
+                              }
+                            >
+                              {passwordStrength >= 75 ? "Strong" : 
+                               passwordStrength >= 50 ? "Moderate" : 
+                               passwordStrength >= 25 ? "Weak" : "Very weak"}
+                            </Text>
+                          </Box>
+                          <Progress 
+                            value={passwordStrength} 
+                            size="md" 
+                            colorScheme={getPasswordStrengthColor()}
+                            borderRadius="full"
+                            height="8px"
+                          />
+                          <Text fontSize="sm" color="gray.500" mt={3}>
+                            • At least 8 characters<br/>
+                            • Include uppercase & lowercase letters<br/>
+                            • Include numbers & symbols
+                          </Text>
+                        </Box>
+                      )}
+                    </FormControl>
+
+                    {/* Confirm Password Field */}
+                    <FormControl isRequired>
+                      <FormLabel color="gray.700" fontWeight="600" fontSize="md" mb={2}>
+                        Confirm Password
+                      </FormLabel>
+                      <InputGroup>
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Re-enter your password"
+                          value={password2}
+                          onChange={(e) => setPassword2(e.target.value)}
+                          size="lg"
+                          height="56px"
+                          borderRadius="lg"
+                          borderColor="gray.300"
+                          _hover={{ borderColor: "teal.400" }}
+                          _focus={{
+                            borderColor: "teal.500",
+                            boxShadow: "0 0 0 3px rgba(56, 178, 172, 0.15)",
+                          }}
+                          fontSize="md"
+                          paddingX={4}
+                          paddingRight="60px"
+                        />
+                        <InputRightElement 
+                          height="56px"
+                          width="4.5rem"
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            _hover={{ bg: "transparent" }}
+                            h="100%"
+                            w="100%"
+                          >
+                            {showConfirmPassword ? (
+                              <ViewOffIcon color="gray.500" boxSize={5} />
+                            ) : (
+                              <ViewIcon color="gray.500" boxSize={5} />
+                            )}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                      {password && password2 && password !== password2 && (
+                        <Text color="red.500" fontSize="sm" mt={2}>
+                          ✗ Passwords do not match
+                        </Text>
+                      )}
+                    </FormControl>
+
+                    {/* Terms */}
+                    <Box 
+                      p={5} 
+                      bg="gray.50" 
+                      borderRadius="lg" 
+                      border="1px solid" 
+                      borderColor="gray.200"
+                      mt={4}
+                    >
+                      <Text fontSize="md" color="gray.600">
+                        By creating an account, you agree to our{" "}
+                        <Link color="teal.500" fontWeight="700">Terms of Service</Link>{" "}
+                        and{" "}
+                        <Link color="teal.500" fontWeight="700">Privacy Policy</Link>.
+                      </Text>
+                    </Box>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      w="full"
+                      colorScheme="teal"
+                      size="lg"
+                      height="56px"
+                      fontSize="lg"
+                      fontWeight="600"
+                      borderRadius="lg"
+                      isLoading={isLoading}
+                      loadingText="Creating account..."
+                      _hover={{
+                        bg: "teal.600",
+                        transform: "translateY(-2px)",
+                        boxShadow: "xl"
+                      }}
+                      transition="all 0.3s"
+                      mt={6}
+                    >
+                      Create Account
+                    </Button>
+                  </VStack>
+                </form>
+
+                {/* Already have account */}
+                <Box textAlign="center" pt={6}>
+                  <Text color="gray.600" fontSize="lg">
+                    Already have an account?{" "}
+                    <Link
+                      color="teal.500"
+                      fontWeight="700"
+                      fontSize="lg"
+                      _hover={{ color: "teal.600", textDecoration: "underline" }}
+                      onClick={() => navigate("/login")}
+                    >
+                      Sign in here
+                    </Link>
+                  </Text>
+                </Box>
+
+                {/* Features Note */}
+                <Box
+                  p={5}
+                  bg="teal.50"
+                  borderRadius="xl"
+                  border="1px solid"
+                  borderColor="teal.200"
+                  textAlign="center"
                 >
-                  Sign in here
-                </Link>
+                  <Text fontSize="md" color="teal.700" fontWeight="600" mb={2}>
+                    ✨ All features are free for personal use
+                  </Text>
+                  <Box display="flex" justifyContent="center" flexWrap="wrap" gap={4} mt={3}>
+                    <Text fontSize="md" color="teal.600">✓ Unlimited notes</Text>
+                    <Text fontSize="md" color="teal.600">✓ Rich editor</Text>
+                    <Text fontSize="md" color="teal.600">✓ Auto-save</Text>
+                    <Text fontSize="md" color="teal.600">✓ Cloud sync</Text>
+                  </Box>
+                </Box>
+              </VStack>
+            </Box>
+
+            {/* Footer */}
+            <Box textAlign="center" mt={8}>
+              <Text color="gray.500" fontSize="md">
+                © {new Date().getFullYear()} MindSpace. All rights reserved.
+              </Text>
+              <Text color="gray.400" fontSize="sm" mt={2}>
+                Your data is encrypted and secure
               </Text>
             </Box>
-
-            {/* Features List */}
-            <Box
-              bg="teal.50"
-              p={4}
-              borderRadius="lg"
-              borderLeft="4px solid"
-              borderColor="teal.400"
-            >
-              <Heading size="sm" color="teal.700" mb={2}>
-                What you get with MindSpace:
-              </Heading>
-              <VStack align="start" spacing={1}>
-                <Text fontSize="sm" color="teal.600">✓ Rich text editor with formatting</Text>
-                <Text fontSize="sm" color="teal.600">✓ Organize notes with tags</Text>
-                <Text fontSize="sm" color="teal.600">✓ Auto-save functionality</Text>
-                <Text fontSize="sm" color="teal.600">✓ Secure cloud storage</Text>
-              </VStack>
-            </Box>
-          </VStack>
-        </Box>
-
-        {/* Footer */}
-        <Box textAlign="center" mt={8}>
-          <Text color="gray.500" fontSize="sm">
-            © {new Date().getFullYear()} MindSpace. All rights reserved.
-          </Text>
-          <Text color="gray.400" fontSize="xs" mt={2}>
-            Your data is encrypted and secure
-          </Text>
-        </Box>
+          </Box>
+        </Flex>
       </Container>
     </Flex>
   );
