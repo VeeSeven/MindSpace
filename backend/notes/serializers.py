@@ -13,7 +13,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'password', 'password2')
         extra_kwargs = {
-            'email': {'required': False},  # set True if you want an email required
+            'email': {'required': False},
         }
 
     def validate(self, data):

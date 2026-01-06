@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from "react";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
@@ -6,7 +5,7 @@ import axios from "axios";
 const AuthContext = createContext();
 export default AuthContext;
 
-const API_BASE = "http://127.0.0.1:8000/api"; // adjust if needed
+const API_BASE = "http://127.0.0.1:8000/api"; 
 
 export function AuthProvider({ children }) {
   const [tokens, setTokens] = useState(() => {
@@ -19,7 +18,7 @@ export function AuthProvider({ children }) {
     return raw ? jwtDecode(JSON.parse(raw).access) : null;
   });
 
-  // Login function: returns true on success, false otherwise
+  
   const loginUser = async (username, password) => {
     try {
       const res = await axios.post(`${API_BASE}/token/`, {
@@ -46,7 +45,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("tokens");
   };
 
-  // Refresh token function (callable)
+  
   const refreshToken = async () => {
     try {
       if (!tokens?.refresh) throw new Error("No refresh token");
@@ -56,7 +55,7 @@ export function AuthProvider({ children }) {
       if (res.status === 200) {
         const newTokens = {
           access: res.data.access,
-          refresh: tokens.refresh, // keep the same refresh or take from res if returned
+          refresh: tokens.refresh, 
         };
         setTokens(newTokens);
         setUser(jwtDecode(newTokens.access));
@@ -90,17 +89,14 @@ const registerUser = async ({ username, password, password2, email }) => {
   }
 };
 
-
-  // Periodically refresh access token while logged in
   useEffect(() => {
     if (!tokens) return;
-    // refresh every 4 minutes (240000ms). Adjust as needed.
+
     const interval = setInterval(() => {
       refreshToken();
     }, 4 * 60 * 1000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens]);
 
   const contextData = {

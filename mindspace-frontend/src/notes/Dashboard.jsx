@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState(null);
 
-  // Load all notes on mount
+  
   useEffect(() => {
     loadNotes();
   }, []);
@@ -23,13 +23,13 @@ export default function Dashboard() {
     try {
       const res = await api.get("notes/");
       const list = res.data.results || res.data;
-      // Sort by updated_at descending (most recent first)
+      
       const sortedNotes = list.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
       setNotes(sortedNotes);
 
-      // If there's no selected note, auto-select first and fetch its detail
+      
       if (sortedNotes.length > 0 && !selectedNote) {
         fetchNoteDetail(sortedNotes[0].id);
       } else {
@@ -49,7 +49,7 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  // Fetch detail for a single note (ensures we have `content`)
+  
   const fetchNoteDetail = async (id) => {
     if (!id) return;
     try {
@@ -68,7 +68,7 @@ export default function Dashboard() {
     }
   };
 
-  // Create new note
+  
   const createNote = async () => {
     try {
       const res = await api.post("notes/", {
@@ -76,12 +76,12 @@ export default function Dashboard() {
         content: "<p></p>",
       });
       const newNotes = [res.data, ...notes];
-      // Sort again
+      
       const sortedNotes = newNotes.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
       setNotes(sortedNotes);
-      // fetch detail
+      
       fetchNoteDetail(res.data.id);
       
       toast({
@@ -104,11 +104,11 @@ export default function Dashboard() {
     }
   };
 
-  // Update note in list after saving
+  
   const handleSaved = (updated) => {
     setNotes((prev) => {
       const updatedNotes = prev.map((n) => (n.id === updated.id ? updated : n));
-      // Re-sort
+      
       return updatedNotes.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
@@ -116,7 +116,7 @@ export default function Dashboard() {
     setSelectedNote(updated);
   };
 
-  // Rename
+  
   const renameNote = async (id, newTitle) => {
     const note = notes.find((n) => n.id === id);
     if (!note) return;
@@ -150,7 +150,6 @@ export default function Dashboard() {
     }
   };
 
-  // Delete note
   const deleteNote = async (id) => {
     try {
       await api.delete(`notes/${id}/`);
