@@ -1,5 +1,5 @@
 import { Box, Spinner } from "@chakra-ui/react";
-import { EditorContent } from "@tiptap/react"; // Fixed import
+import { EditorContent } from "@tiptap/react";
 
 const editorStyles = {
   "& .tiptap": {
@@ -110,7 +110,7 @@ const editorStyles = {
     },
     "& .ProseMirror": {
       padding: "1em 0",
-      "& > *:first-child": {
+      "& > *:first-of-type": {
         marginTop: 0,
       },
     },

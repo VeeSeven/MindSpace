@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   HStack,
   IconButton,
@@ -6,7 +7,7 @@ import {
   Text,
   Badge,
   Button,
-  Box  // Added Box import
+  Box
 } from "@chakra-ui/react";
 import {
   Bold, Italic, Underline as UnderlineIcon,
@@ -49,24 +50,24 @@ const TOOLBAR_SECTIONS = {
 
 const getEditorCommand = (editor, action) => {
   const commandMap = {
-    undo: () => editor.chain().focus().undo().run(),
-    redo: () => editor.chain().focus().redo().run(),
-    setParagraph: () => editor.chain().focus().setParagraph().run(),
-    toggleHeading2: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
-    toggleHeading3: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-    toggleBold: () => editor.chain().focus().toggleBold().run(),
-    toggleItalic: () => editor.chain().focus().toggleItalic().run(),
-    toggleUnderline: () => editor.chain().focus().toggleUnderline().run(),
-    toggleStrike: () => editor.chain().focus().toggleStrike().run(),
-    toggleHighlight: () => editor.chain().focus().toggleHighlight().run(),
-    toggleBulletList: () => editor.chain().focus().toggleBulletList().run(),
-    toggleOrderedList: () => editor.chain().focus().toggleOrderedList().run(),
-    toggleBlockquote: () => editor.chain().focus().toggleBlockquote().run(),
-    toggleCodeBlock: () => editor.chain().focus().toggleCodeBlock().run(),
-    setHorizontalRule: () => editor.chain().focus().setHorizontalRule().run(),
-    alignLeft: () => editor.chain().focus().setTextAlign('left').run(),
-    alignCenter: () => editor.chain().focus().setTextAlign('center').run(),
-    alignRight: () => editor.chain().focus().setTextAlign('right').run()
+    undo: () => editor?.chain().focus().undo().run(),
+    redo: () => editor?.chain().focus().redo().run(),
+    setParagraph: () => editor?.chain().focus().setParagraph().run(),
+    toggleHeading2: () => editor?.chain().focus().toggleHeading({ level: 2 }).run(),
+    toggleHeading3: () => editor?.chain().focus().toggleHeading({ level: 3 }).run(),
+    toggleBold: () => editor?.chain().focus().toggleBold().run(),
+    toggleItalic: () => editor?.chain().focus().toggleItalic().run(),
+    toggleUnderline: () => editor?.chain().focus().toggleUnderline().run(),
+    toggleStrike: () => editor?.chain().focus().toggleStrike().run(),
+    toggleHighlight: () => editor?.chain().focus().toggleHighlight().run(),
+    toggleBulletList: () => editor?.chain().focus().toggleBulletList().run(),
+    toggleOrderedList: () => editor?.chain().focus().toggleOrderedList().run(),
+    toggleBlockquote: () => editor?.chain().focus().toggleBlockquote().run(),
+    toggleCodeBlock: () => editor?.chain().focus().toggleCodeBlock().run(),
+    setHorizontalRule: () => editor?.chain().focus().setHorizontalRule().run(),
+    alignLeft: () => editor?.chain().focus().setTextAlign('left').run(),
+    alignCenter: () => editor?.chain().focus().setTextAlign('center').run(),
+    alignRight: () => editor?.chain().focus().setTextAlign('right').run()
   };
   
   return commandMap[action] || (() => {});
@@ -74,21 +75,21 @@ const getEditorCommand = (editor, action) => {
 
 const checkIsActive = (editor, activeCheck) => {
   const activeMap = {
-    paragraph: () => editor.isActive('paragraph'),
-    heading2: () => editor.isActive('heading', { level: 2 }),
-    heading3: () => editor.isActive('heading', { level: 3 }),
-    bold: () => editor.isActive('bold'),
-    italic: () => editor.isActive('italic'),
-    underline: () => editor.isActive('underline'),
-    strike: () => editor.isActive('strike'),
-    highlight: () => editor.isActive('highlight'),
-    bulletList: () => editor.isActive('bulletList'),
-    orderedList: () => editor.isActive('orderedList'),
-    blockquote: () => editor.isActive('blockquote'),
-    codeBlock: () => editor.isActive('codeBlock'),
-    alignLeft: () => editor.isActive({ textAlign: 'left' }),
-    alignCenter: () => editor.isActive({ textAlign: 'center' }),
-    alignRight: () => editor.isActive({ textAlign: 'right' })
+    paragraph: () => editor?.isActive('paragraph'),
+    heading2: () => editor?.isActive('heading', { level: 2 }),
+    heading3: () => editor?.isActive('heading', { level: 3 }),
+    bold: () => editor?.isActive('bold'),
+    italic: () => editor?.isActive('italic'),
+    underline: () => editor?.isActive('underline'),
+    strike: () => editor?.isActive('strike'),
+    highlight: () => editor?.isActive('highlight'),
+    bulletList: () => editor?.isActive('bulletList'),
+    orderedList: () => editor?.isActive('orderedList'),
+    blockquote: () => editor?.isActive('blockquote'),
+    codeBlock: () => editor?.isActive('codeBlock'),
+    alignLeft: () => editor?.isActive({ textAlign: 'left' }),
+    alignCenter: () => editor?.isActive({ textAlign: 'center' }),
+    alignRight: () => editor?.isActive({ textAlign: 'right' })
   };
   
   return activeMap[activeCheck] ? activeMap[activeCheck]() : false;
@@ -116,7 +117,7 @@ const ToolbarButton = ({ editor, item }) => {
   );
 };
 
-export const Toolbar = ({ editor, wordCount, characterCount, saving, onSave, note }) => { // Added note prop
+export const Toolbar = ({ editor, wordCount, characterCount, saving, onSave, note }) => {
   return (
     <Box
       bg="white"
@@ -132,7 +133,7 @@ export const Toolbar = ({ editor, wordCount, characterCount, saving, onSave, not
       <HStack justify="space-between" mb={3}>
         <HStack spacing={4}>
           <Text fontSize="xl" fontWeight="700" color="gray.800">
-            {note.title}
+            {note?.title || 'Untitled Note'}
           </Text>
           <Badge 
             colorScheme="blue" 
@@ -186,17 +187,17 @@ export const Toolbar = ({ editor, wordCount, characterCount, saving, onSave, not
           borderRadius: '2px' 
         },
       }}>
-        {Object.entries(TOOLBAR_SECTIONS).map(([sectionName, buttons], index) => (
-          <>
-            <ButtonGroup key={sectionName} size="sm" variant="ghost" spacing={1}>
+        {Object.entries(TOOLBAR_SECTIONS).map(([sectionName, buttons], index, array) => (
+          <React.Fragment key={sectionName}>
+            <ButtonGroup size="sm" variant="ghost" spacing={1}>
               {buttons.map((button) => (
-                <ToolbarButton key={button.action} editor={editor} item={button} />
+                <ToolbarButton key={`${sectionName}-${button.action}`} editor={editor} item={button} />
               ))}
             </ButtonGroup>
-            {index < Object.keys(TOOLBAR_SECTIONS).length - 1 && (
+            {index < array.length - 1 && (
               <Divider orientation="vertical" height="20px" />
             )}
-          </>
+          </React.Fragment>
         ))}
       </HStack>
     </Box>
