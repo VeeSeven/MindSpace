@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./notes/Login.jsx";
-import Dashboard from "./notes/Dashboard.jsx";
+import Dashboard from "./components/Dashboard/index.jsx"; 
 import PrivateRoute from "./utils/PrivateRoute.jsx";
 import { AuthProvider } from "./context/AuthContext";
-import Register from "./notes/Register"; 
+import Register from "./notes/Register.jsx"; 
 
 export default function App() {
   return (

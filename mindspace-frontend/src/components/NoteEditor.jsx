@@ -12,7 +12,6 @@ import {
   Divider,
   Button
 } from "@chakra-ui/react";
-import { Save } from "lucide-react";
 import useAxios from "../api/axios";
 import { EmptyState } from "./NoteEditor/EmptyState";
 import { Toolbar } from "./NoteEditor/Toolbar";

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 
@@ -9,12 +9,12 @@ const API_BASE = "http://127.0.0.1:8000/api";
 
 export function AuthProvider({ children }) {
   const [tokens, setTokens] = useState(() => {
-    const raw = localStorage.getItem("tokens");
+    const raw = sessionStorage.getItem("tokens");
     return raw ? JSON.parse(raw) : null;
   });
 
   const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("tokens");
+    const raw = sessionStorage.getItem("tokens");
     return raw ? jwtDecode(JSON.parse(raw).access) : null;
   });
 
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
         const newTokens = res.data;
         setTokens(newTokens);
         setUser(jwtDecode(newTokens.access));
-        localStorage.setItem("tokens", JSON.stringify(newTokens));
+        sessionStorage.setItem("tokens", JSON.stringify(newTokens));
         return true;
       }
       return false;
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
   const logoutUser = () => {
     setTokens(null);
     setUser(null);
-    localStorage.removeItem("tokens");
+    sessionStorage.removeItem("tokens");
   };
 
   
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
         };
         setTokens(newTokens);
         setUser(jwtDecode(newTokens.access));
-        localStorage.setItem("tokens", JSON.stringify(newTokens));
+        sessionStorage.setItem("tokens", JSON.stringify(newTokens));
         return true;
       }
     } catch (err) {

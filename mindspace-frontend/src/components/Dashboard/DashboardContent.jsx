@@ -1,11 +1,10 @@
-import { Box, Flex, useToast } from "@chakra-ui/react";
-import Topbar from "../components/Topbar";
-import Sidebar from "../components/Sidebar";
-import NoteEditor from "../components/NoteEditor";
-import useAxios from "../api/axios";
+import { Box, useToast } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import Sidebar from "../Sidebar";
+import NoteEditor from "../NoteEditor";
+import useAxios from "../../api/axios";
 
-export default function Dashboard() {
+export const DashboardContent = () => {
   const api = useAxios();
   const toast = useToast();
 
@@ -13,7 +12,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedNote, setSelectedNote] = useState(null);
 
-  
   useEffect(() => {
     loadNotes();
   }, []);
@@ -23,13 +21,11 @@ export default function Dashboard() {
     try {
       const res = await api.get("notes/");
       const list = res.data.results || res.data;
-      
       const sortedNotes = list.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
       setNotes(sortedNotes);
 
-      
       if (sortedNotes.length > 0 && !selectedNote) {
         fetchNoteDetail(sortedNotes[0].id);
       } else {
@@ -49,7 +45,6 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  
   const fetchNoteDetail = async (id) => {
     if (!id) return;
     try {
@@ -68,24 +63,22 @@ export default function Dashboard() {
     }
   };
 
-  
-  const createNote = async () => {
+  const createNote = async (parentId = null) => {
     try {
       const res = await api.post("notes/", {
         title: "Untitled Note",
         content: "<p></p>",
+        parent: parentId,
       });
       const newNotes = [res.data, ...notes];
-      
       const sortedNotes = newNotes.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
       setNotes(sortedNotes);
-      
       fetchNoteDetail(res.data.id);
       
       toast({
-        title: "✨ New note created",
+        title: parentId ? "✨ Note added to folder" : "✨ New note created",
         status: "success",
         duration: 2000,
         isClosable: true,
@@ -104,11 +97,9 @@ export default function Dashboard() {
     }
   };
 
-  
   const handleSaved = (updated) => {
     setNotes((prev) => {
       const updatedNotes = prev.map((n) => (n.id === updated.id ? updated : n));
-      
       return updatedNotes.sort((a, b) => 
         new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
       );
@@ -116,7 +107,6 @@ export default function Dashboard() {
     setSelectedNote(updated);
   };
 
-  
   const renameNote = async (id, newTitle) => {
     const note = notes.find((n) => n.id === id);
     if (!note) return;
@@ -184,53 +174,44 @@ export default function Dashboard() {
   };
 
   return (
-    <Box 
-      minHeight="100vh" 
-      bgGradient="linear(to-br, gray.50, blue.50)"
-      overflow="hidden"
-    >
-      <Topbar />
+    <>
+      <Sidebar
+        notes={notes}
+        loading={loading}
+        onCreateNote={createNote}
+        onSelectNote={(note) => fetchNoteDetail(note.id)}
+        selectedNoteId={selectedNote?.id}
+        onRenameNote={renameNote}
+        onDeleteNote={deleteNote}
+      />
 
-      <Flex pt="60px" height="calc(100vh - 60px)">
-        <Sidebar
-          notes={notes}
-          loading={loading}
-          onCreateNote={createNote}
-          onSelectNote={(note) => fetchNoteDetail(note.id)}
-          selectedNoteId={selectedNote?.id}
-          onRenameNote={renameNote}
-          onDeleteNote={deleteNote}
+      <Box
+        flex="1"
+        height="100%"
+        bg="transparent"
+        ml="280px"
+        overflow="hidden"
+        position="relative"
+      >
+        <NoteEditor 
+          key={selectedNote?.id || 'empty'} 
+          note={selectedNote} 
+          onSaved={handleSaved} 
         />
-
+        
         <Box
-          flex="1"
-          height="100%"
-          bg="transparent"
-          ml="280px"
-          overflow="hidden"
-          position="relative"
+          position="absolute"
+          bottom="20px"
+          right="20px"
+          color="gray.300"
+          fontSize="xs"
+          opacity="0.5"
+          zIndex="1"
+          userSelect="none"
         >
-          <NoteEditor 
-            key={selectedNote?.id || 'empty'} 
-            note={selectedNote} 
-            onSaved={handleSaved} 
-          />
-          
-          {/* Watermark/Background Pattern */}
-          <Box
-            position="absolute"
-            bottom="20px"
-            right="20px"
-            color="gray.300"
-            fontSize="xs"
-            opacity="0.5"
-            zIndex="1"
-            userSelect="none"
-          >
-            MindSpace Editor
-          </Box>
+          MindSpace Editor
         </Box>
-      </Flex>
-    </Box>
+      </Box>
+    </>
   );
-}
+};

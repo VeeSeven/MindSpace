@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 let baseURL = "http://127.0.0.1:8000/api/";
 
@@ -12,7 +11,7 @@ const axiosInstance = axios.create({
 
 // Attach tokens to every request
 axiosInstance.interceptors.request.use((config) => {
-  const tokens = localStorage.getItem("tokens");
+  const tokens = sessionStorage.getItem("tokens");
 
   if (tokens) {
     const access = JSON.parse(tokens).access;
@@ -32,7 +31,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const tokens = JSON.parse(localStorage.getItem("tokens") || "{}");
+      const tokens = JSON.parse(sessionStorage.getItem("tokens") || "{}");
 
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/token/refresh/", {
@@ -46,15 +45,13 @@ axiosInstance.interceptors.response.use(
           refresh: tokens.refresh,
         };
 
-        localStorage.setItem("tokens", JSON.stringify(newTokens));
+        sessionStorage.setItem("tokens", JSON.stringify(newTokens));
 
-        originalRequest.headers[
-          "Authorization"
-        ] = `Bearer ${newAccess}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccess}`;
 
         return axiosInstance(originalRequest);
       } catch (err) {
-        localStorage.removeItem("tokens");
+        sessionStorage.removeItem("tokens");
         window.location.href = "/login";
       }
     }
@@ -63,6 +60,31 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// Create a notes API utility object
+export const notesAPI = {
+  // Get all notes (flat or tree)
+  getAll: (params = {}) => axiosInstance.get('notes/', { params }),
+  
+  // Get note by ID with children
+  getById: (id) => axiosInstance.get(`notes/${id}/`),
+  
+  // Create note with optional parent
+  create: (data) => axiosInstance.post('notes/', data),
+  
+  // Update note
+  update: (id, data) => axiosInstance.put(`notes/${id}/`, data),
+  
+  // Delete note
+  delete: (id) => axiosInstance.delete(`notes/${id}/`),
+  
+  // Get notes by tag
+  getByTag: (tag) => axiosInstance.get(`notes/?tag=${tag}`),
+  
+  // Get top-level notes (no parent)
+  getTopLevel: () => axiosInstance.get('notes/?parent__isnull=true'),
+};
+
+// The useAxios hook (for backward compatibility)
 export default function useAxios() {
   return axiosInstance;
 }
