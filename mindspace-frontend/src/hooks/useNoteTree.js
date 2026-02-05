@@ -1,48 +1,43 @@
-import { useMemo, useState } from 'react';
+import { useState, useMemo } from 'react';
 
-export const useNoteTree = (notes) => {
-  const [expandedFolders, setExpandedFolders] = useState(new Set());
-  
-  const buildTree = (items, parentId = null) => {
-    return items
-      .filter(item => item.parent === parentId)
-      .map(item => ({
-        ...item,
-        children: buildTree(items, item.id)
-      }));
-  };
-  
+export const useNoteTree = (notes = []) => {
+  const [expandedFolders, setExpandedFolders] = useState([]);
+
   const noteTree = useMemo(() => {
-    return buildTree(notes);
+    if (!Array.isArray(notes)) return [];
+    
+    const noteMap = {};
+    const tree = [];
+    
+    notes.forEach(note => {
+      noteMap[note.id] = { ...note, children: [] };
+    });
+    
+    notes.forEach(note => {
+      const noteWithChildren = noteMap[note.id];
+      if (note.parent && noteMap[note.parent]) {
+        noteMap[note.parent].children.push(noteWithChildren);
+      } else {
+        tree.push(noteWithChildren);
+      }
+    });
+    
+    return tree;
   }, [notes]);
-  
+
   const toggleExpand = (noteId) => {
     setExpandedFolders(prev => {
-      const next = new Set(prev);
-      if (next.has(noteId)) {
-        next.delete(noteId);
+      if (prev.includes(noteId)) {
+        return prev.filter(id => id !== noteId);
       } else {
-        next.add(noteId);
+        return [...prev, noteId];
       }
-      return next;
     });
   };
-  
-  const expandAll = () => {
-    const allNoteIds = notes.map(note => note.id);
-    setExpandedFolders(new Set(allNoteIds));
-  };
-  
-  const collapseAll = () => {
-    setExpandedFolders(new Set());
-  };
-  
+
   return {
     noteTree,
     expandedFolders,
-    toggleExpand,
-    expandAll,
-    collapseAll,
-    setExpandedFolders
+    toggleExpand
   };
 };

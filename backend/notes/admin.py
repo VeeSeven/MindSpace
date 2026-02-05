@@ -12,4 +12,3 @@ class PageAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'parent', 'updated_at')
     list_filter = ('author', 'tags')
     search_fields = ('title', 'content')
-

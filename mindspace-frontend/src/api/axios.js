@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
   },
 });
 
-// Attach tokens to every request
 axiosInstance.interceptors.request.use((config) => {
   const tokens = sessionStorage.getItem("tokens");
 
@@ -21,7 +20,6 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Automatically refresh token on 401
 axiosInstance.interceptors.response.use(
   (response) => response,
 
@@ -60,31 +58,33 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// Create a notes API utility object
 export const notesAPI = {
-  // Get all notes (flat or tree)
   getAll: (params = {}) => axiosInstance.get('notes/', { params }),
   
-  // Get note by ID with children
   getById: (id) => axiosInstance.get(`notes/${id}/`),
   
-  // Create note with optional parent
   create: (data) => axiosInstance.post('notes/', data),
   
-  // Update note
   update: (id, data) => axiosInstance.put(`notes/${id}/`, data),
   
-  // Delete note
   delete: (id) => axiosInstance.delete(`notes/${id}/`),
   
-  // Get notes by tag
-  getByTag: (tag) => axiosInstance.get(`notes/?tag=${tag}`),
+  getTags: () => axiosInstance.get('tags/'),
+
+  createTag: (data) => axiosInstance.post('tags/', data),
+
+  updateTag: (id, data) => axiosInstance.put(`tags/${id}/`, data),
   
-  // Get top-level notes (no parent)
-  getTopLevel: () => axiosInstance.get('notes/?parent__isnull=true'),
+  deleteTag: (id) => axiosInstance.delete(`tags/${id}/`),
+  
+  assignTagToNote: (noteId, tagId) => 
+    axiosInstance.post(`notes/${noteId}/add_tag/`, { tag_id: tagId }),
+  removeTagFromNote: (noteId, tagId) => 
+    axiosInstance.delete(`notes/${noteId}/remove_tag/`, { data: { tag_id: tagId } }),
+  
+  getNotesByTag: (tagId) => axiosInstance.get(`notes/?tag=${tagId}`),
 };
 
-// The useAxios hook (for backward compatibility)
 export default function useAxios() {
   return axiosInstance;
 }

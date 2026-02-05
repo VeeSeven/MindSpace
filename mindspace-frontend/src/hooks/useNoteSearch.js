@@ -1,52 +1,68 @@
-import { useMemo, useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export const useNoteSearch = (noteTree) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  
-  const filterTree = (tree, query, tags) => {
-    if (!query && tags.length === 0) return tree;
-    
-    const filterItems = (items) => {
-      return items.filter(item => {
-        const matchesSearch = !query || 
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.content.toLowerCase().includes(query.toLowerCase());
-        
-        const matchesTags = tags.length === 0 || 
-          (item.tags && tags.some(tag => 
-            item.tags.some(noteTag => 
-              (typeof noteTag === 'object' ? noteTag.name : noteTag).toLowerCase() === tag.toLowerCase()
-            )
-          ));
-        
-        const childrenMatch = filterItems(item.children || []);
-        
-        return matchesSearch && matchesTags || childrenMatch.length > 0;
-      }).map(item => ({
-        ...item,
-        children: filterItems(item.children || [])
-      }));
-    };
-    
-    return filterItems(tree);
-  };
-  
+
   const filteredTree = useMemo(() => {
-    return filterTree(noteTree, searchQuery, selectedTags);
+    
+    const noteMatches = (item) => {
+      
+      const matchesSearch = searchQuery === '' || 
+        (item.title && item.title.toLowerCase().includes(searchQuery.toLowerCase())) || 
+        (item.content && item.content.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const matchesTags = selectedTags.length === 0 || 
+        selectedTags.some(selectedTag => {
+          const tagName = typeof selectedTag === 'string' 
+            ? selectedTag 
+            : selectedTag.name || selectedTag;
+          
+          if (!item.tags || !Array.isArray(item.tags)) return false;
+          
+          return item.tags.some(itemTag => {
+            const itemTagName = typeof itemTag === 'string'
+              ? itemTag
+              : itemTag.name || itemTag;
+            
+            return itemTagName.toLowerCase() === tagName.toLowerCase();
+          });
+        });
+
+      return matchesSearch && matchesTags;
+    };
+
+    const filterTree = (items) => {
+      const result = [];
+      
+      for (const item of items) {
+        const currentItemMatches = noteMatches(item);
+        
+        const filteredChildren = filterTree(item.children || []);
+        
+        if (currentItemMatches || filteredChildren.length > 0) {
+          result.push({
+            ...item,
+            children: filteredChildren
+          });
+        }
+      }
+      
+      return result;
+    };
+
+    return filterTree(noteTree);
   }, [noteTree, searchQuery, selectedTags]);
-  
-  const clearFilters = () => {
-    setSearchQuery('');
-    setSelectedTags([]);
-  };
-  
+
   return {
     searchQuery,
     setSearchQuery,
     selectedTags,
     setSelectedTags,
     filteredTree,
-    clearFilters
+    clearFilters: () => {
+      setSearchQuery('');
+      setSelectedTags([]);
+    }
   };
 };

@@ -1,5 +1,5 @@
 import { Button, VStack, Divider } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { FiPlus } from "react-icons/fi";
 
 export const SidebarHeader = ({ onCreateNote }) => {
   return (
@@ -7,9 +7,10 @@ export const SidebarHeader = ({ onCreateNote }) => {
       <Button 
         colorScheme="blue" 
         onClick={() => onCreateNote(null)}
-        size="lg"
-        mb={2}
-        leftIcon={<AddIcon />}
+        size="md"
+        leftIcon={<FiPlus />}
+        fontWeight="semibold"
+        width="100%"
       >
         New Note
       </Button>

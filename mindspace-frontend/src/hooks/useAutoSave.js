@@ -11,7 +11,6 @@ export const useAutoSave = ({ note, editor, onSave, interval = 30000 }) => {
       return;
     }
     
-    // Store initial content
     lastSavedContentRef.current = note.content || "<p></p>";
     saveAttemptRef.current = 0;
     
@@ -44,29 +43,24 @@ export const useAutoSave = ({ note, editor, onSave, interval = 30000 }) => {
       }
     };
     
-    // Set up interval - FORCE save regardless of content
     const intervalId = setInterval(() => {
       console.log(`\n⏰ AUTO-SAVE TIMER TRIGGERED at ${new Date().toLocaleTimeString()}`);
       performAutoSave();
     }, interval);
     
-    // Also trigger on editor changes (debounced)
     const handleEditorUpdate = ({ editor: updatedEditor }) => {
       console.log("✏️ Editor content changed (debounced save in 30s)");
       
-      // Clear any existing timeout
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
       
-      // Set a new timeout for auto-save
       saveTimeoutRef.current = setTimeout(() => {
         console.log("🕐 Debounced auto-save triggered");
         performAutoSave();
       }, interval);
     };
     
-    // Listen for editor changes
     editor.on('update', handleEditorUpdate);
     
     return () => {

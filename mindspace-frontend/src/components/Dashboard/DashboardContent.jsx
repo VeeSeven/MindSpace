@@ -63,22 +63,24 @@ export const DashboardContent = () => {
     }
   };
 
-  const createNote = async (parentId = null) => {
+  const handleCreateNote = async (parentId = null) => {
     try {
       const res = await api.post("notes/", {
         title: "Untitled Note",
         content: "<p></p>",
         parent: parentId,
       });
+      
       const newNotes = [res.data, ...notes];
       const sortedNotes = newNotes.sort((a, b) => 
-        new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
+        new Date(b.updated_at || b.created_at) - new Date(a.updated_at || b.created_at)
       );
+      
       setNotes(sortedNotes);
       fetchNoteDetail(res.data.id);
       
       toast({
-        title: parentId ? "✨ Note added to folder" : "✨ New note created",
+        title: parentId ? "📁 Note added to folder" : "✨ New note created",
         status: "success",
         duration: 2000,
         isClosable: true,
@@ -97,17 +99,11 @@ export const DashboardContent = () => {
     }
   };
 
-  const handleSaved = (updated) => {
-    setNotes((prev) => {
-      const updatedNotes = prev.map((n) => (n.id === updated.id ? updated : n));
-      return updatedNotes.sort((a, b) => 
-        new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
-      );
-    });
-    setSelectedNote(updated);
+  const handleSelectNote = (note) => {
+    fetchNoteDetail(note.id);
   };
 
-  const renameNote = async (id, newTitle) => {
+  const handleRenameNote = async (id, newTitle) => {
     const note = notes.find((n) => n.id === id);
     if (!note) return;
     try {
@@ -140,7 +136,7 @@ export const DashboardContent = () => {
     }
   };
 
-  const deleteNote = async (id) => {
+  const handleDeleteNote = async (id) => {
     try {
       await api.delete(`notes/${id}/`);
       const newNotes = notes.filter((n) => n.id !== id);
@@ -173,23 +169,58 @@ export const DashboardContent = () => {
     }
   };
 
+  const handleTagCreated = (newTag) => {
+
+    console.log("New tag created:", newTag);
+    toast({
+      title: "Tag created",
+      description: `"${newTag.name}" has been created`,
+      status: "success",
+      duration: 2000,
+      position: "top-right"
+    });
+  };
+
+  const handleTagDeleted = (deletedTag) => {
+    console.log("Tag deleted:", deletedTag);
+    toast({
+      title: "Tag deleted",
+      description: `"${deletedTag.name}" has been removed`,
+      status: "info",
+      duration: 2000,
+      position: "top-right"
+    });
+  };
+
+  const handleSaved = (updated) => {
+    setNotes((prev) => {
+      const updatedNotes = prev.map((n) => (n.id === updated.id ? updated : n));
+      return updatedNotes.sort((a, b) => 
+        new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)
+      );
+    });
+    setSelectedNote(updated);
+  };
+
   return (
     <>
       <Sidebar
         notes={notes}
         loading={loading}
-        onCreateNote={createNote}
-        onSelectNote={(note) => fetchNoteDetail(note.id)}
+        onCreateNote={handleCreateNote}
+        onSelectNote={handleSelectNote}
         selectedNoteId={selectedNote?.id}
-        onRenameNote={renameNote}
-        onDeleteNote={deleteNote}
+        onRenameNote={handleRenameNote}
+        onDeleteNote={handleDeleteNote}
+        onTagCreated={handleTagCreated}
+        onTagDeleted={handleTagDeleted}
       />
 
       <Box
         flex="1"
         height="100%"
         bg="transparent"
-        ml="280px"
+        ml="320px" 
         overflow="hidden"
         position="relative"
       >
