@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.example
+.git
+.gitignore
+
+# Python junk
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+venv/
+.venv/
+.pytest_cache/
+
+# Frontend junk
+**/node_modules/
+**/dist/
+**/build/
+.npm/
+npm-debug.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Django local data
+**/staticfiles/
+**/media/
+db.sqlite3

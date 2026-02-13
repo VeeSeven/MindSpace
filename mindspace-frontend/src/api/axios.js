@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseURL = "http://127.0.0.1:8000/api/";
+const baseURL = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/";
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -32,7 +32,8 @@ axiosInstance.interceptors.response.use(
       const tokens = JSON.parse(sessionStorage.getItem("tokens") || "{}");
 
       try {
-        const response = await axios.post("http://127.0.0.1:8000/api/token/refresh/", {
+        
+        const response = await axios.post(baseURL + "token/refresh/", {
           refresh: tokens.refresh,
         });
 
@@ -57,6 +58,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export const notesAPI = {
   getAll: (params = {}) => axiosInstance.get('notes/', { params }),

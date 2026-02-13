@@ -13,7 +13,8 @@ venv/
 # Django local env
 /local_settings.py
 .env
-.env.*             
+.env.*
+!**/.env.example             
 
 # Node
 node_modules/
@@ -36,3 +37,19 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ===== ADD THESE =====
+# Docker
+docker-compose.override.yml
+.env.prod
+.env.production
+.env.staging
+
+# Database backups
+*.sql
+*.dump
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
