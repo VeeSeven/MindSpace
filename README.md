@@ -16,6 +16,9 @@ MindSpace is a recursive note‑taking app where you can create nested notes (fo
 - **Backend:** Django, Django REST Framework, SimpleJWT, PostgreSQL
 - **Containerization:** Docker, Docker Compose
 
+![Mindspace - gif](https://github.com/user-attachments/assets/5df5a36e-7589-4495-9e2b-abdef9c0a0d7)
+
+
 ## 📋 Prerequisites
 
 - [Git](https://git-scm.com/)
